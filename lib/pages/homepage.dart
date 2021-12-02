@@ -7,21 +7,31 @@ import 'package:pitmon_test/providers/userdata.dart';
 import 'package:pitmon_test/util/helper.dart';
 import 'package:pitmon_test/util/colors.dart';
 
-class homepage extends StatelessWidget {
-  int age = 0;
-  double weight = 0;
+class homepage extends StatefulWidget {
+  const homepage({Key? key}) : super(key: key);
 
+  @override
+  _homepageState createState() => _homepageState();
+}
+
+class _homepageState extends State<homepage> {
+  int age = 0;
+  double weight = 0.0;
+  int userExp = 0;
+  int userLevel = 0;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     Size centerButtonSize = Size(size.width * 0.82, 30);
+    userExp = Provider.of<userData>(context, listen: false).exp;
+    userLevel = Provider.of<userData>(context, listen: false).level;
     return Scaffold(
       //상단 바
       appBar: AppBar(
         backgroundColor: lightGreen,
         elevation: 0,
         title: Center(
-          child: const Text('사용자 정보 입력',
+          child: const Text('Pitmon',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         ),
       ),
@@ -35,8 +45,8 @@ class homepage extends StatelessWidget {
             Container(
                 child: Center(
               child: Text(
-                '경험치 : /*exp*/', // --------------------------------------------------------------------------
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
+                '레벨 : $userLevel\n경험치 : $userExp', // --------------------------------------------------------------------------
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             )),
             Container(
@@ -82,6 +92,30 @@ class homepage extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            Container(
+              //누를 시 경험치 +300(테스트용)
+              child: Center(
+                  child: Column(
+                children: [
+                  SizedBox(height: 5.0), //간격 조정 사이즈박스
+                  TextButton(
+                    onPressed: () {
+                      int newExp =
+                          Provider.of<userData>(context, listen: false).exp +
+                              300;
+                      Provider.of<userData>(context, listen: false)
+                          .editExp(newExp);
+                      setState(() {});
+                    },
+                    style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
+                    child: const Text(
+                      '경험치 + 300',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              )),
             ),
           ],
         ),
