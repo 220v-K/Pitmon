@@ -7,6 +7,7 @@ class userData with ChangeNotifier {
   double userWeight = 0.0;
   int exp = 0;
   int level = 1;
+  var service = 0;
 
   void editAge(int age) {
     userAge = age;
@@ -25,6 +26,11 @@ class userData with ChangeNotifier {
 
   void editlevel(int level) {
     this.level = level;
+    notifyListeners();
+  }
+
+  void editService(var service) {
+    this.service = service;
     notifyListeners();
   }
 }

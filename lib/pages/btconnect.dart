@@ -7,6 +7,8 @@ import 'package:pitmon_test/util/colors.dart';
 import 'package:pitmon_test/widget/btcwidgets.dart';
 import 'package:pitmon_test/constants.dart';
 import 'package:pitmon_test/widget/bottomNavBar.dart';
+import 'package:provider/provider.dart';
+import 'package:pitmon_test/providers/userdata.dart';
 
 class btconnect extends StatelessWidget {
   @override
@@ -93,12 +95,18 @@ class FindDevicesScreen extends StatelessWidget {
                                 if (snapshot.data ==
                                     BluetoothDeviceState.connected) {
                                   return RaisedButton(
-                                    child: Text('OPEN'),
-                                    onPressed: () => Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DeviceScreen(device: d))),
-                                  );
+                                      child: Text('OPEN'),
+                                      onPressed: () => {
+                                            //Provider로 Bluetooth Service Uid Send.
+                                            Provider.of<userData>(context,
+                                                    listen: false)
+                                                .editService(d),
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DeviceScreen(
+                                                            device: d))),
+                                          });
                                 }
                                 return Text(snapshot.data.toString());
                               },
@@ -114,13 +122,16 @@ class FindDevicesScreen extends StatelessWidget {
                   children: snapshot.data!
                       .map(
                         (r) => ScanResultTile(
-                          result: r,
-                          onTap: () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            r.device.connect();
-                            return DeviceScreen(device: r.device);
-                          })),
-                        ),
+                            result: r,
+                            onTap: () {
+                              Provider.of<userData>(context, listen: false)
+                                  .editService(r.device);
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                r.device.connect();
+                                return DeviceScreen(device: r.device);
+                              }));
+                            }),
                       )
                       .toList(),
                 ),

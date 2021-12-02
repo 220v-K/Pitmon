@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pitmon_test/pages/btconnect.dart';
-import 'package:pitmon_test/pages/exercise.dart';
+import 'package:pitmon_test/pages/exercisepage.dart';
 import 'package:pitmon_test/pages/homepage.dart';
 import 'package:pitmon_test/pages/heartbeat.dart';
 import 'package:pitmon_test/constants.dart';
@@ -49,8 +49,8 @@ class BottomNavigator extends StatelessWidget {
             icon: SvgPicture.asset("assets/icons/fitness.svg"),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => exercise()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => exercisePage()));
             },
           ),
           IconButton(
