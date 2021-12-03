@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pitmon_test/pages/btconnect.dart';
+import 'package:pitmon_test/pages/DiscoveryPage.dart';
 import 'package:pitmon_test/pages/exercisepage.dart';
 import 'package:pitmon_test/pages/homepage.dart';
 import 'package:pitmon_test/pages/heartbeat.dart';
@@ -42,7 +43,7 @@ class BottomNavigator extends StatelessWidget {
             icon: SvgPicture.asset("assets/icons/bluetooth.svg"),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => btconnect()));
+                  MaterialPageRoute(builder: (context) => DiscoveryPage()));
             },
           ),
           IconButton(

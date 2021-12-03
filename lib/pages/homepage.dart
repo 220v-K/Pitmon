@@ -41,11 +41,13 @@ class _homepageState extends State<homepage> {
         child: Column(
           children: <Widget>[
             Container(
-                child: Center(child: Image.asset("assets/images/level1.jpg"))),
+                child: Center(
+                    child: Image.asset("assets/images/level1.jpg",
+                        width: 200, height: 200, fit: BoxFit.contain))),
             Container(
                 child: Center(
               child: Text(
-                '레벨 : $userLevel\n경험치 : $userExp', // --------------------------------------------------------------------------
+                '레벨 : $userLevel\n경험치 : $userExp',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             )),
@@ -53,7 +55,7 @@ class _homepageState extends State<homepage> {
               //나이 입력 텍스트박스
               height: 70,
               width: 700,
-              margin: EdgeInsets.only(top: 5.0),
+              margin: EdgeInsets.only(top: 1.0),
               color: Colors.white,
               child: TextField(
                 onChanged: (text) {

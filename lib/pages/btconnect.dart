@@ -97,10 +97,6 @@ class FindDevicesScreen extends StatelessWidget {
                                   return RaisedButton(
                                       child: Text('OPEN'),
                                       onPressed: () => {
-                                            //Provider로 Bluetooth Service Uid Send.
-                                            Provider.of<userData>(context,
-                                                    listen: false)
-                                                .editService(d),
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -124,8 +120,10 @@ class FindDevicesScreen extends StatelessWidget {
                         (r) => ScanResultTile(
                             result: r,
                             onTap: () {
+                              //Provider로 Bluetooth Service Uid Send.
                               Provider.of<userData>(context, listen: false)
-                                  .editService(r.device);
+                                  .editServiceChar(
+                                      FlutterBlue.instance.scanResults);
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 r.device.connect();
@@ -230,7 +228,11 @@ class DeviceScreen extends StatelessWidget {
                   text = 'DISCONNECT';
                   break;
                 case BluetoothDeviceState.disconnected:
-                  onPressed = () => device.connect();
+                  onPressed = () {
+                    Provider.of<userData>(context, listen: false)
+                        .editService(device);
+                    device.connect();
+                  };
                   text = 'CONNECT';
                   break;
                 default:
