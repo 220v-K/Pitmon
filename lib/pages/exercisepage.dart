@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pitmon_test/constants.dart';
+import 'package:pitmon_test/pages/ChatPage.dart';
 import 'package:pitmon_test/widget/bottomNavBar.dart';
 import 'package:provider/provider.dart';
 import 'package:pitmon_test/providers/userdata.dart';
 import 'package:pitmon_test/util/helper.dart';
 import 'package:pitmon_test/util/colors.dart';
 import 'package:pitmon_test/util/helper.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class exercisePage extends StatefulWidget {
   const exercisePage({Key? key}) : super(key: key);
@@ -18,7 +22,7 @@ class exercisePage extends StatefulWidget {
 //운동시작, 운동종료, 운동방법
 
 class _exercisePageState extends State<exercisePage> {
-  final FlutterBlue device = FlutterBlue.instance;
+  late final BluetoothDevice device;
   String btInput = '';
   String btOutput = '';
 
@@ -27,7 +31,8 @@ class _exercisePageState extends State<exercisePage> {
     //사이즈 조정용 변수
     final Size size = MediaQuery.of(context).size;
     Size centerButtonSize = Size(size.width * 0.82, 30);
-    //블루투스 연결된 device 주소 저장.
+    //블루투스 연결된 device 저장.
+    device = Provider.of<userData>(context, listen: false).device;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,10 +60,14 @@ class _exercisePageState extends State<exercisePage> {
                 child: TextButton(
                   onPressed: () {
                     //버튼 누를 시 실행
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatPage(server: device)));
                   },
                   style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   child: const Text(
-                    '입력 완료',
+                    '입력 받아오기',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

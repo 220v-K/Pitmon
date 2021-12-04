@@ -164,13 +164,14 @@ class _ChatPage extends State<ChatPage> {
 
   void _onDataReceived(Uint8List data) {
     // Allocate buffer for parsed data
+    print(data);
     int backspacesCounter = 0;
     data.forEach((byte) {
       if (byte == 8 || byte == 127) {
         backspacesCounter++;
       }
     });
-    Uint8List buffer = Uint8List(data.length - backspacesCounter);
+    Uint8List buffer = data;
     int bufferIndex = buffer.length;
 
     // Apply backspace control character
@@ -189,6 +190,7 @@ class _ChatPage extends State<ChatPage> {
 
     // Create message if there is new line character
     String dataString = String.fromCharCodes(buffer);
+
     int index = buffer.indexOf(13);
     if (~index != 0) {
       setState(() {

@@ -36,7 +36,8 @@ class _homepageState extends State<homepage> {
         ),
       ),
       //텍스트 입력 칸
-      body: Padding(
+      body: SingleChildScrollView(
+          child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
@@ -121,7 +122,7 @@ class _homepageState extends State<homepage> {
             ),
           ],
         ),
-      ),
+      )),
 
       //하단 네비게이터
       bottomNavigationBar: BottomNavigator(),

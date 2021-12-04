@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class userData with ChangeNotifier {
   int userAge = 0;
   double userWeight = 0.0;
   int exp = 0;
   int level = 1;
-  var service = 0;
-  var serviceChar;
+  late BluetoothDevice device;
 
   void editAge(int age) {
     userAge = age;
@@ -30,13 +30,8 @@ class userData with ChangeNotifier {
     notifyListeners();
   }
 
-  void editService(var service) {
-    this.service = service;
-    notifyListeners();
-  }
-
-  void editServiceChar(var char) {
-    this.serviceChar = char;
+  void editDevice(BluetoothDevice device) {
+    this.device = device;
     notifyListeners();
   }
 }

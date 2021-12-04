@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pitmon_test/pages/BluetoothDeviceListEntry.dart';
+import 'package:pitmon_test/pages/SelectBondedDevicePage.dart';
 import 'package:pitmon_test/pages/btconnect.dart';
 import 'package:pitmon_test/pages/DiscoveryPage.dart';
 import 'package:pitmon_test/pages/exercisepage.dart';
 import 'package:pitmon_test/pages/homepage.dart';
 import 'package:pitmon_test/pages/heartbeat.dart';
 import 'package:pitmon_test/constants.dart';
+import 'package:provider/provider.dart';
+import 'package:pitmon_test/providers/userdata.dart';
 
 class BottomNavigator extends StatelessWidget {
   const BottomNavigator({
@@ -42,8 +46,8 @@ class BottomNavigator extends StatelessWidget {
           IconButton(
             icon: SvgPicture.asset("assets/icons/bluetooth.svg"),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DiscoveryPage()));
+              //블루투스 연결 화면으로 이동 후 선택된 블루투스 디바이스 정보를 Provider에 저장.
+              selectDeviceSaving(context);
             },
           ),
           IconButton(
@@ -66,4 +70,14 @@ class BottomNavigator extends StatelessWidget {
       ),
     );
   }
+}
+
+selectDeviceSaving(BuildContext context) async {
+  // Navigator.push는 Future를 반환합니다. Future는 선택 창에서
+  // Navigator.pop이 호출된 이후 완료될 것입니다.
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (device) => SelectBondedDevicePage()),
+  );
+  Provider.of<userData>(context, listen: false).editDevice(result);
 }
