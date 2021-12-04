@@ -8,6 +8,10 @@ class userData with ChangeNotifier {
   double userWeight = 0.0;
   int exp = 0;
   int level = 1;
+  int count = 0;
+  String address = '0';
+  String flag = 'd';
+
   late BluetoothDevice device;
 
   void editAge(int age) {
@@ -27,6 +31,21 @@ class userData with ChangeNotifier {
 
   void editlevel(int level) {
     this.level = level;
+    notifyListeners();
+  }
+
+  void editFlag(String flag) {
+    this.flag = flag;
+    notifyListeners();
+  }
+
+  void editCount(int count) {
+    this.count = count;
+    notifyListeners();
+  }
+
+  void editAddress(String address) {
+    this.address = address;
     notifyListeners();
   }
 

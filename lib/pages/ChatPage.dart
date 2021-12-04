@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:pitmon_test/pages/exercisepage.dart';
+import 'package:pitmon_test/providers/userdata.dart';
+import 'package:pitmon_test/util/helper.dart';
+import 'package:pitmon_test/util/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:pitmon_test/providers/userdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
@@ -85,6 +90,9 @@ class _ChatPage extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    //사이즈 조정용 변수
+    final Size size = MediaQuery.of(context).size;
+    Size centerButtonSize = Size(size.width * 0.82, 30);
     final List<Row> list = messages.map((_message) {
       return Row(
         children: <Widget>[
@@ -120,6 +128,40 @@ class _ChatPage extends State<ChatPage> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            Container(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    _sendMessage('a'); // 운동 시작하는 플래그의 영문자 전송.
+                  },
+                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
+                  child: Text(
+                    '측정 시작',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    _sendMessage('b'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+                    Duration(milliseconds: 400);
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => exercisePage()));
+                  },
+                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
+                  child: Text(
+                    '측정 종료',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
             Flexible(
               child: ListView(
                   padding: const EdgeInsets.all(12.0),
@@ -163,15 +205,18 @@ class _ChatPage extends State<ChatPage> {
   }
 
   void _onDataReceived(Uint8List data) {
+    int countData = data[1];
+    print(countData);
+    Provider.of<userData>(context, listen: false).editCount(countData);
+
     // Allocate buffer for parsed data
-    print(data);
     int backspacesCounter = 0;
     data.forEach((byte) {
       if (byte == 8 || byte == 127) {
         backspacesCounter++;
       }
     });
-    Uint8List buffer = data;
+    Uint8List buffer = Uint8List(data.length - backspacesCounter);
     int bufferIndex = buffer.length;
 
     // Apply backspace control character
@@ -190,7 +235,6 @@ class _ChatPage extends State<ChatPage> {
 
     // Create message if there is new line character
     String dataString = String.fromCharCodes(buffer);
-
     int index = buffer.indexOf(13);
     if (~index != 0) {
       setState(() {

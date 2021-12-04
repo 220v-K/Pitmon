@@ -25,6 +25,7 @@ class _exercisePageState extends State<exercisePage> {
   late final BluetoothDevice device;
   String btInput = '';
   String btOutput = '';
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +33,58 @@ class _exercisePageState extends State<exercisePage> {
     final Size size = MediaQuery.of(context).size;
     Size centerButtonSize = Size(size.width * 0.82, 30);
     //블루투스 연결된 device 저장.
-    device = Provider.of<userData>(context, listen: false).device;
+    final device = Provider.of<userData>(context, listen: false).device;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: lightGreen,
         elevation: 0,
         title: const Center(
-          child: Text('Exercise',
+          child: Text('운동 측정',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(5.0),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
+            SizedBox(
+              width: 200,
+              height: 200,
+            ),
             Container(
               child: Center(
                 child: Text(
-                  'Bluetooth Input',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal),
+                  //카운트
+                  'COUNT : $count',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal),
                 ), //Count 횟수, 블루투스에서 받아오는 메시지 추후 입력
+              ),
+            ),
+            SizedBox(
+              width: 1,
+              height: 100,
+            ),
+            Container(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    //버튼 누를 시 실행
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatPage(server: device)));
+                    count = Provider.of<userData>(context, listen: false).count;
+                    setState(() {});
+                  },
+                  style:
+                      buildDoubleButtonStyle(lightBlue, centerButtonSize * 2),
+                  child: Text(
+                    '측정 화면으로',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ),
             ),
             Container(
@@ -60,19 +92,20 @@ class _exercisePageState extends State<exercisePage> {
                 child: TextButton(
                   onPressed: () {
                     //버튼 누를 시 실행
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatPage(server: device)));
+                    count = Provider.of<userData>(context, listen: false).count;
+                    print(count);
+
+                    setState(() {});
                   },
-                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
-                  child: const Text(
-                    '입력 받아오기',
+                  style:
+                      buildDoubleButtonStyle(lightBlue, centerButtonSize * 0.5),
+                  child: Text(
+                    '새로고침',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

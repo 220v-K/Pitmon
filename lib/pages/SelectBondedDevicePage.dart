@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 import './BluetoothDeviceListEntry.dart';
+import 'package:provider/provider.dart';
+import 'package:pitmon_test/providers/userdata.dart';
 
 class SelectBondedDevicePage extends StatefulWidget {
   /// If true, on page start there is performed discovery upon the bonded devices.
@@ -115,13 +117,16 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
               rssi: _device.rssi,
               enabled: _device.availability == _DeviceAvailability.yes,
               onTap: () {
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                Provider.of<userData>(context, listen: false)
+                    .editAddress(_device.device.address);
                 Navigator.of(context).pop(_device.device);
               },
             ))
         .toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select device'),
+        title: Text('블루투스를 연결할 기기 선택'),
         actions: <Widget>[
           _isDiscovering
               ? FittedBox(
