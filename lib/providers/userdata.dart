@@ -9,6 +9,7 @@ class userData with ChangeNotifier {
   int exp = 0;
   int level = 1;
   int count = 0;
+  double beat = 0.0;
   String address = '0';
   String flag = 'd';
 
@@ -46,6 +47,11 @@ class userData with ChangeNotifier {
 
   void editAddress(String address) {
     this.address = address;
+    notifyListeners();
+  }
+
+  void editBeat(double beat) {
+    this.beat = beat;
     notifyListeners();
   }
 

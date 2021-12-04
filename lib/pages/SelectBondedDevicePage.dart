@@ -126,7 +126,7 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
         .toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text('블루투스를 연결할 기기 선택'),
+        title: Text('블루투스 연결'),
         actions: <Widget>[
           _isDiscovering
               ? FittedBox(

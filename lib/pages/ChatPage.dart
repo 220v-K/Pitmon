@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pitmon_test/pages/exercisepage.dart';
+import 'package:pitmon_test/pages/heartbeat.dart';
 import 'package:pitmon_test/providers/userdata.dart';
 import 'package:pitmon_test/util/helper.dart';
 import 'package:pitmon_test/util/colors.dart';
@@ -121,43 +122,62 @@ class _ChatPage extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
           title: (isConnecting
-              ? Text('Connecting chat to ' + serverName + '...')
+              ? Text('블루투스명 : ' + serverName + '에 연결중입니다...')
               : isConnected
-                  ? Text('Live chat with ' + serverName)
+                  ? Text(serverName + '에 연결되어 있음')
                   : Text('Chat log with ' + serverName))),
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Container(
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    _sendMessage('a'); // 운동 시작하는 플래그의 영문자 전송.
-                  },
-                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
-                  child: Text(
-                    '측정 시작',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
+            SizedBox(
+              height: 100,
             ),
             Container(
               child: Center(
                 child: TextButton(
                   onPressed: () {
-                    _sendMessage('b'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
-                    Duration(milliseconds: 400);
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => exercisePage()));
+                    _sendMessage(Provider.of<userData>(context, listen: false)
+                        .flag); // 운동 시작하는 플래그의 영문자 전송.
+                  },
+                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
+                  //삼항 연산자로 flag에 따라 뜨는 글자 다르게 처리
+                  child: Text(
+                    (Provider.of<userData>(context, listen: false).flag == 'a')
+                        ? '운동 측정 시작'
+                        : '심박수 측정 시작',
+                    style: TextStyle(fontSize: 25, color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 100,
+            ),
+
+            Container(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    if (Provider.of<userData>(context, listen: false).flag ==
+                        'a') {
+                      _sendMessage('b'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => exercisePage()));
+                    } else {
+                      _sendMessage('d'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => heartbeat()));
+                    }
                   },
                   style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   child: Text(
                     '측정 종료',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(fontSize: 25, color: Colors.black),
                   ),
                 ),
               ),
@@ -168,36 +188,36 @@ class _ChatPage extends State<ChatPage> {
                   controller: listScrollController,
                   children: list),
             ),
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 16.0),
-                    child: TextField(
-                      style: const TextStyle(fontSize: 15.0),
-                      controller: textEditingController,
-                      decoration: InputDecoration.collapsed(
-                        hintText: isConnecting
-                            ? 'Wait until connected...'
-                            : isConnected
-                                ? 'Type your message...'
-                                : 'Chat got disconnected',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                      ),
-                      enabled: isConnected,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: isConnected
-                          ? () => _sendMessage(textEditingController.text)
-                          : null),
-                ),
-              ],
-            )
+            // Row(
+            //   children: <Widget>[
+            //     Flexible(
+            //       child: Container(
+            //         margin: const EdgeInsets.only(left: 16.0),
+            //         child: TextField(
+            //           style: const TextStyle(fontSize: 15.0),
+            //           controller: textEditingController,
+            //           decoration: InputDecoration.collapsed(
+            //             hintText: isConnecting
+            //                 ? 'Wait until connected...'
+            //                 : isConnected
+            //                     ? 'Type your message...'
+            //                     : 'Chat got disconnected',
+            //             hintStyle: const TextStyle(color: Colors.grey),
+            //           ),
+            //           enabled: isConnected,
+            //         ),
+            //       ),
+            //     ),
+            //     Container(
+            //       margin: const EdgeInsets.all(8.0),
+            //       child: IconButton(
+            //           icon: const Icon(Icons.send),
+            //           onPressed: isConnected
+            //               ? () => _sendMessage(textEditingController.text)
+            //               : null),
+            //     ),
+            //   ],
+            // )
           ],
         ),
       ),
@@ -238,15 +258,15 @@ class _ChatPage extends State<ChatPage> {
     int index = buffer.indexOf(13);
     if (~index != 0) {
       setState(() {
-        messages.add(
-          _Message(
-            1,
-            backspacesCounter > 0
-                ? _messageBuffer.substring(
-                    0, _messageBuffer.length - backspacesCounter)
-                : _messageBuffer + dataString.substring(0, index),
-          ),
-        );
+        // messages.add(
+        //   _Message(
+        //     1,
+        //     backspacesCounter > 0
+        //         ? _messageBuffer.substring(
+        //             0, _messageBuffer.length - backspacesCounter)
+        //         : _messageBuffer + dataString.substring(0, index),
+        //   ),
+        // );
         _messageBuffer = dataString.substring(index);
       });
     } else {
@@ -267,7 +287,7 @@ class _ChatPage extends State<ChatPage> {
         await connection!.output.allSent;
 
         setState(() {
-          messages.add(_Message(clientID, text));
+          //messages.add(_Message(clientID, text)); //메시지 안나오게 수정
         });
 
         Future.delayed(Duration(milliseconds: 333)).then((_) {

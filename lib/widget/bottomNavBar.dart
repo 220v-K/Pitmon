@@ -25,13 +25,13 @@ class BottomNavigator extends StatelessWidget {
         bottom: 0,
       ),
       height: 80,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          offset: Offset(0, -10),
-          blurRadius: 30,
-          color: kPrimaryColor.withOpacity(0.4),
-        ),
-      ]),
+      // decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      //   BoxShadow(
+      //     offset: Offset(0, -10),
+      //     blurRadius: 30,
+      //     color: kPrimaryColor.withOpacity(0.4),
+      //   ),
+      // ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -51,7 +51,11 @@ class BottomNavigator extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: SvgPicture.asset("assets/icons/fitness.svg"),
+            icon: SvgPicture.asset(
+              "assets/icons/fitness.svg",
+              width: 25,
+              height: 25,
+            ),
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(context,
