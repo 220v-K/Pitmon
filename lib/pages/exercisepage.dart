@@ -26,6 +26,9 @@ class _exercisePageState extends State<exercisePage> {
   String btInput = '';
   String btOutput = '';
   int count = 0;
+  double kcal = 0.0;
+  int elapseTime = 0;
+  double expPoint = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,9 @@ class _exercisePageState extends State<exercisePage> {
     Size centerButtonSize = Size(size.width * 0.82, 30);
     //블루투스 연결된 device 저장.
     final device = Provider.of<userData>(context, listen: false).device;
+    double weight = Provider.of<userData>(context, listen: false).userWeight;
+
+    Stopwatch stopwatch = new Stopwatch();
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +62,7 @@ class _exercisePageState extends State<exercisePage> {
               child: Center(
                 child: Text(
                   //카운트
-                  'COUNT : $count',
+                  'COUNT : $count\n 소모 Kcal : ${kcal.toStringAsFixed(5)}',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal),
                 ), //Count 횟수, 블루투스에서 받아오는 메시지 추후 입력
               ),
@@ -70,12 +76,17 @@ class _exercisePageState extends State<exercisePage> {
                 child: TextButton(
                   onPressed: () {
                     //버튼 누를 시 실행
+                    Provider.of<userData>(context, listen: false).editFlag('a');
                     Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatPage(server: device)));
+                    setState(() {});
                     count = Provider.of<userData>(context, listen: false).count;
+                    elapseTime =
+                        Provider.of<userData>(context, listen: false).time;
+                    kcal = 8.0 * weight * (elapseTime / 1000) / 3600 / 60;
                     setState(() {});
                   },
                   style:
@@ -87,20 +98,50 @@ class _exercisePageState extends State<exercisePage> {
                 ),
               ),
             ),
+            SizedBox(
+              width: 10,
+              height: 30,
+            ),
             Container(
               child: Center(
                 child: TextButton(
                   onPressed: () {
                     //버튼 누를 시 실행
                     count = Provider.of<userData>(context, listen: false).count;
+                    elapseTime =
+                        Provider.of<userData>(context, listen: false).time;
+                    kcal = 8.0 * weight * (elapseTime / 1000) / 3600 / 60;
                     print(count);
+                    print(elapseTime);
+                    print(kcal);
+                    int userLevel =
+                        Provider.of<userData>(context, listen: false).level;
+                    double expPoint = kcal * count * 100;
+                    double newExp =
+                        Provider.of<userData>(context, listen: false).exp +
+                            expPoint;
 
+                    Provider.of<userData>(context, listen: false)
+                        .editExp(newExp);
+                    if (userLevel == 1 && newExp > 1000.0) {
+                      Provider.of<userData>(context, listen: false)
+                          .editlevel(2);
+                      newExp = newExp - 1000.0;
+                      Provider.of<userData>(context, listen: false)
+                          .editExp(newExp);
+                    }
+                    if (userLevel == 2 && newExp > 2000.0) {
+                      Provider.of<userData>(context, listen: false)
+                          .editlevel(3);
+                      newExp = newExp - 2000.0;
+                      Provider.of<userData>(context, listen: false)
+                          .editExp(newExp);
+                    }
                     setState(() {});
                   },
-                  style:
-                      buildDoubleButtonStyle(lightBlue, centerButtonSize * 0.5),
+                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   child: Text(
-                    '새로고침',
+                    '새로고침(경험치 적용), 1회만 터치',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

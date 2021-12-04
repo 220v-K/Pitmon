@@ -91,6 +91,10 @@ class _heartbeatPage extends State<heartbeat> {
                 ),
               ),
             ),
+            SizedBox(
+              width: 20,
+              height: 30,
+            ),
             Container(
               child: Center(
                 child: TextButton(
@@ -101,8 +105,7 @@ class _heartbeatPage extends State<heartbeat> {
 
                     setState(() {});
                   },
-                  style:
-                      buildDoubleButtonStyle(lightBlue, centerButtonSize * 0.5),
+                  style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   child: Text(
                     '새로고침',
                     style: TextStyle(color: Colors.black),

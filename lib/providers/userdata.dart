@@ -6,10 +6,11 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 class userData with ChangeNotifier {
   int userAge = 0;
   double userWeight = 0.0;
-  int exp = 0;
+  double exp = 0;
   int level = 1;
   int count = 0;
   double beat = 0.0;
+  int time = 0;
   String address = '0';
   String flag = 'd';
 
@@ -20,12 +21,17 @@ class userData with ChangeNotifier {
     notifyListeners();
   }
 
+  void editTime(int elapsedtime) {
+    time = elapsedtime;
+    notifyListeners();
+  }
+
   void editWeight(double weight) {
     userWeight = weight;
     notifyListeners();
   }
 
-  void editExp(int exp) {
+  void editExp(double exp) {
     this.exp = exp;
     notifyListeners();
   }

@@ -42,6 +42,7 @@ class _ChatPage extends State<ChatPage> {
   bool get isConnected => (connection?.isConnected ?? false);
 
   bool isDisconnecting = false;
+  Stopwatch stopwatch = new Stopwatch();
 
   @override
   void initState() {
@@ -137,8 +138,26 @@ class _ChatPage extends State<ChatPage> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
-                    _sendMessage(Provider.of<userData>(context, listen: false)
-                        .flag); // 운동 시작하는 플래그의 영문자 전송.
+                    stopwatch.start();
+                    if (Provider.of<userData>(context, listen: false).flag ==
+                        'a') {
+                      //운동 시작
+                      int age =
+                          Provider.of<userData>(context, listen: false).userAge;
+                      double weight =
+                          Provider.of<userData>(context, listen: false)
+                              .userWeight;
+                      String ageS = age.toString();
+                      String weightS = weight.toString();
+                      _sendMessage(ageS);
+                      _sendMessage(weightS);
+                      _sendMessage(
+                          Provider.of<userData>(context, listen: false).flag);
+                    } else {
+                      //심박수측정 시작
+                      _sendMessage(
+                          Provider.of<userData>(context, listen: false).flag);
+                    }
                   },
                   style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   //삼항 연산자로 flag에 따라 뜨는 글자 다르게 처리
@@ -159,6 +178,10 @@ class _ChatPage extends State<ChatPage> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
+                    Provider.of<userData>(context, listen: false)
+                        .editTime(stopwatch.elapsedMilliseconds);
+                    print(stopwatch.elapsedMilliseconds);
+                    stopwatch.stop();
                     if (Provider.of<userData>(context, listen: false).flag ==
                         'a') {
                       _sendMessage('b'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
@@ -169,6 +192,7 @@ class _ChatPage extends State<ChatPage> {
                               builder: (context) => exercisePage()));
                     } else {
                       _sendMessage('d'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+
                       Navigator.pop(context);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => heartbeat()));
@@ -225,10 +249,12 @@ class _ChatPage extends State<ChatPage> {
   }
 
   void _onDataReceived(Uint8List data) {
-    int countData = data[1];
+    //setState(() {});
+    int countData = data[0];
     print(countData);
     Provider.of<userData>(context, listen: false).editCount(countData);
-
+    // double beatdata = data[1] as double;
+    // Provider.of<userData>(context, listen: false).editBeat(beatdata);
     // Allocate buffer for parsed data
     int backspacesCounter = 0;
     data.forEach((byte) {

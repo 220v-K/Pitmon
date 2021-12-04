@@ -17,7 +17,7 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
   int age = 0;
   double weight = 0.0;
-  int userExp = 0;
+  double userExp = 0;
   int userLevel = 0;
   @override
   Widget build(BuildContext context) {
@@ -41,14 +41,25 @@ class _homepageState extends State<homepage> {
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            Container(
-                child: Center(
-                    child: Image.asset("assets/images/level1.jpg",
-                        width: 200, height: 200, fit: BoxFit.contain))),
+            if (userLevel == 1)
+              Container(
+                  child: Center(
+                      child: Image.asset("assets/images/level1.jpg",
+                          width: 200, height: 200, fit: BoxFit.contain))),
+            if (userLevel == 2)
+              Container(
+                  child: Center(
+                      child: Image.asset("assets/images/level2.jpg",
+                          width: 200, height: 200, fit: BoxFit.contain))),
+            if (userLevel == 3)
+              Container(
+                  child: Center(
+                      child: Image.asset("assets/images/level3.jpg",
+                          width: 200, height: 200, fit: BoxFit.contain))),
             Container(
                 child: Center(
               child: Text(
-                '레벨 : $userLevel\n경험치 : $userExp',
+                '레벨 : $userLevel\n경험치 : ${userExp.toStringAsFixed(3)}',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             )),
@@ -104,11 +115,25 @@ class _homepageState extends State<homepage> {
                   SizedBox(height: 5.0), //간격 조정 사이즈박스
                   TextButton(
                     onPressed: () {
-                      int newExp =
+                      double newExp =
                           Provider.of<userData>(context, listen: false).exp +
-                              300;
+                              300.0;
                       Provider.of<userData>(context, listen: false)
                           .editExp(newExp);
+                      if (userLevel == 1 && newExp > 1000.0) {
+                        Provider.of<userData>(context, listen: false)
+                            .editlevel(2);
+                        newExp = newExp - 1000.0;
+                        Provider.of<userData>(context, listen: false)
+                            .editExp(newExp);
+                      }
+                      if (userLevel == 2 && newExp > 2000.0) {
+                        Provider.of<userData>(context, listen: false)
+                            .editlevel(3);
+                        newExp = newExp - 2000.0;
+                        Provider.of<userData>(context, listen: false)
+                            .editExp(newExp);
+                      }
                       setState(() {});
                     },
                     style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
@@ -120,6 +145,16 @@ class _homepageState extends State<homepage> {
                 ],
               )),
             ),
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+                child: Center(
+              child: Text(
+                '입력된 나이 : $age\n몸무게 : $weight',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+            )),
           ],
         ),
       )),
