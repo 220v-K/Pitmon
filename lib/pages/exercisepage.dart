@@ -12,20 +12,23 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-class heartbeat extends StatefulWidget {
-  const heartbeat({Key? key}) : super(key: key);
+class exercisePage extends StatefulWidget {
+  const exercisePage({Key? key}) : super(key: key);
 
   @override
-  _heartbeatPage createState() => _heartbeatPage();
+  _exercisePageState createState() => _exercisePageState();
 }
 
 //운동시작, 운동종료, 운동방법
 
-class _heartbeatPage extends State<heartbeat> {
+class _exercisePageState extends State<exercisePage> {
   late final BluetoothDevice device;
   String btInput = '';
   String btOutput = '';
   int count = 0;
+  double kcal = 0.0;
+  int elapseTime = 0;
+  double expPoint = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +37,16 @@ class _heartbeatPage extends State<heartbeat> {
     Size centerButtonSize = Size(size.width * 0.82, 30);
     //블루투스 연결된 device 저장.
     final device = Provider.of<userData>(context, listen: false).device;
-    double beat = Provider.of<userData>(context, listen: false).beat;
-    count = Provider.of<userData>(context, listen: false).count;
+    double weight = Provider.of<userData>(context, listen: false).userWeight;
+
+    Stopwatch stopwatch = new Stopwatch();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: lightGreen,
         elevation: 0,
         title: const Center(
-          child: Text('심박수 측정',
+          child: Text('운동 측정',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         ),
       ),
@@ -58,7 +62,7 @@ class _heartbeatPage extends State<heartbeat> {
               child: Center(
                 child: Text(
                   //카운트
-                  '심박수 : $count',
+                  'COUNT : $count\n 소모 Kcal : ${kcal.toStringAsFixed(5)}',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal),
                 ), //Count 횟수, 블루투스에서 받아오는 메시지 추후 입력
               ),
@@ -72,14 +76,17 @@ class _heartbeatPage extends State<heartbeat> {
                 child: TextButton(
                   onPressed: () {
                     //버튼 누를 시 실행
-                    Provider.of<userData>(context, listen: false)
-                        .editFlag('c'); //심작박동 시작이 c
+                    Provider.of<userData>(context, listen: false).editFlag('a');
                     Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatPage(server: device)));
+                    setState(() {});
                     count = Provider.of<userData>(context, listen: false).count;
+                    elapseTime =
+                        Provider.of<userData>(context, listen: false).time;
+                    kcal = 8.0 * weight * (elapseTime / 1000) / 3600 / 60;
                     setState(() {});
                   },
                   style:
@@ -92,7 +99,7 @@ class _heartbeatPage extends State<heartbeat> {
               ),
             ),
             SizedBox(
-              width: 20,
+              width: 10,
               height: 30,
             ),
             Container(
@@ -101,13 +108,40 @@ class _heartbeatPage extends State<heartbeat> {
                   onPressed: () {
                     //버튼 누를 시 실행
                     count = Provider.of<userData>(context, listen: false).count;
+                    elapseTime =
+                        Provider.of<userData>(context, listen: false).time;
+                    kcal = 8.0 * weight * (elapseTime / 1000) / 3600 / 60;
                     print(count);
+                    print(elapseTime);
+                    print(kcal);
+                    int userLevel =
+                        Provider.of<userData>(context, listen: false).level;
+                    double expPoint = kcal * count * 100;
+                    double newExp =
+                        Provider.of<userData>(context, listen: false).exp +
+                            expPoint;
 
+                    Provider.of<userData>(context, listen: false)
+                        .editExp(newExp);
+                    if (userLevel == 1 && newExp > 1000.0) {
+                      Provider.of<userData>(context, listen: false)
+                          .editlevel(2);
+                      newExp = newExp - 1000.0;
+                      Provider.of<userData>(context, listen: false)
+                          .editExp(newExp);
+                    }
+                    if (userLevel == 2 && newExp > 2000.0) {
+                      Provider.of<userData>(context, listen: false)
+                          .editlevel(3);
+                      newExp = newExp - 2000.0;
+                      Provider.of<userData>(context, listen: false)
+                          .editExp(newExp);
+                    }
                     setState(() {});
                   },
                   style: buildDoubleButtonStyle(lightBlue, centerButtonSize),
                   child: Text(
-                    '새로고침',
+                    '새로고침(경험치 적용), 1회만 터치',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
