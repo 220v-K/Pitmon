@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pitmon_test/pages/BluetoothDeviceListEntry.dart';
 import 'package:pitmon_test/pages/SelectBondedDevicePage.dart';
-import 'package:pitmon_test/pages/DiscoveryPage.dart';
 import 'package:pitmon_test/pages/exercisepage.dart';
 import 'package:pitmon_test/pages/homepage.dart';
 import 'package:pitmon_test/pages/heartbeat.dart';
