@@ -185,6 +185,10 @@ class _ChatPage extends State<ChatPage> {
                     if (Provider.of<userData>(context, listen: false).flag ==
                         'a') {
                       _sendMessage('b'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+                      _sendMessage('b');
+                      _sendMessage('b');
+                      _sendMessage('b');
+                      _sendMessage('b');
                       Navigator.pop(context);
                       Navigator.push(
                           context,
@@ -192,6 +196,10 @@ class _ChatPage extends State<ChatPage> {
                               builder: (context) => exercisePage()));
                     } else {
                       _sendMessage('d'); // 운동 끝내면서 이전 화면으로 돌아가고, count 저장.
+                      _sendMessage('d');
+                      _sendMessage('d');
+                      _sendMessage('d');
+                      _sendMessage('d');
 
                       Navigator.pop(context);
                       Navigator.push(context,
